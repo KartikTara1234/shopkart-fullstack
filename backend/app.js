@@ -37,6 +37,10 @@ export function createApp() {
   );
   app.use(express.json({ limit: "32kb" }));
   app.use(cookieParser());
+  app.use((req, res, next) => {
+    req.body ??= {};
+    next();
+  });
   // Same-origin browser requests plus HttpOnly/SameSite cookies; reject cross-origin writes.
   app.use((req, res, next) => {
     if (
@@ -55,12 +59,10 @@ export function createApp() {
     next();
   });
   app.get("/api/health", (req, res) =>
-    res
-      .status(mongoose.connection.readyState === 1 ? 200 : 503)
-      .json({
-        status: mongoose.connection.readyState === 1 ? "ok" : "unavailable",
-        database: "MongoDB",
-      }),
+    res.status(mongoose.connection.readyState === 1 ? 200 : 503).json({
+      status: mongoose.connection.readyState === 1 ? "ok" : "unavailable",
+      database: "MongoDB",
+    }),
   );
   app.use("/api", router);
   // Unprefixed API contracts match the lab handouts, while /api avoids SPA URL collisions.
@@ -86,6 +88,10 @@ export function createApp() {
   app.use((error, req, res, next) => {
     let status = error.status || 500;
     let message = error.message;
+    if (error.type === "entity.parse.failed") {
+      status = 400;
+      message = "Invalid JSON request body.";
+    }
     if (error.name === "VersionError") {
       status = 409;
       message = "Your bag changed in another request. Refresh and try again.";

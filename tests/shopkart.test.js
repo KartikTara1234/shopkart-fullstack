@@ -40,6 +40,8 @@ test("six-lab API flow and failure cases", async (t) => {
     "authentication rejects anonymous requests and stores only bcrypt hashes",
     async () => {
       await request(app).get("/api/customers/me").expect(401);
+      await request(app).post("/api/customers/register").expect(400);
+      await request(app).post("/api/customers/login").expect(400);
       await agent
         .post("/api/customers/register")
         .send({
