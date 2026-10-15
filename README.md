@@ -4,52 +4,59 @@ An everyday essentials store by Kartik Tara. Built with React, Express, MongoDB 
 
 The interface uses a custom folded-T monogram, translucent glass panels, layered shadows and a responsive dark theme. Customers can register, browse and filter products, save a wishlist, manage their bag and check out through Razorpay.
 
-## Run locally
+## Run with MongoDB Atlas
 
-Requires **Node.js 22+** and internet access for the first database download.
+Requires **Node.js 22+**, internet access and a MongoDB Atlas cluster. The website runs on your computer; its application data is stored online in Atlas. There is no local database fallback.
+
+1. Sign in at https://cloud.mongodb.com and create a cluster (choose the Free option if available).
+2. Create a **database user** with `readWrite` access to the `tara` database. This is separate from your Atlas sign-in.
+3. In **Network Access**, add your current public IP address. On deployment, add the application server's outbound IP address.
+4. Select **Connect → Drivers → Node.js** and copy the connection string.
+5. Copy `.env.example` to `.env` in the project root. Put the Atlas URI in `MONGODB_URI`, replace the username/password placeholders, and use `/tara` before `?`. URL-encode any special characters in the database password. Do not share the completed URI or commit `.env`.
+
+Example format (placeholders only):
+
+```env
+MONGODB_URI=mongodb+srv://<database-user>:<encoded-password>@<cluster-host>/tara?retryWrites=true&w=majority
+JWT_SECRET=replace-with-a-random-secret-of-at-least-32-characters
+```
+
+Generate a signing secret and paste its output into your local `JWT_SECRET`:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
+
+Install, check the Atlas connection, seed the catalogue, build and start:
 
 ```bash
 npm ci
+npm run db:check
+npm run seed
 npm run build
-npm run demo
+npm start
 ```
 
-Open **http://localhost:4000** and create an account. The demo starts a real MongoDB replica set automatically and seeds the catalogue. Data persists locally in `.demo-data/`. Stop it with `Ctrl+C`; wait for shutdown before restarting.
+Open **http://localhost:4000** and create an account. Seeding inserts missing catalogue products without overwriting existing records. Existing data from an older local demo is not automatically transferred; Atlas starts with its own users, carts, wishlists and orders. Stop the server with `Ctrl+C`.
 
-No database account is required for this local setup. Images load from Unsplash. Fonts and the Tara brand mark are included in the source.
+For development, run `npm run dev` and open http://localhost:5173. Vite proxies `/api` to the backend on port 4000, which connects to Atlas.
 
-## Environment and payments
+If the connection check fails, verify the cluster is running, the database user's credentials, the encoded password and the current IP access-list entry. See [MongoDB's official connection guide](https://www.mongodb.com/docs/atlas/driver-connection/). The app requires an Atlas replica set because order confirmation uses transactions.
 
-Copy `.env.example` to `.env` in the project root. Add your own Razorpay **Test Mode** key ID and secret to enable checkout:
+Images load from Unsplash. Fonts and the Tara brand mark are included in the source.
+
+## Payments and secrets
+
+Add your own Razorpay **Test Mode** key ID and secret to `.env` to enable checkout:
 
 ```env
 RAZORPAY_KEY_ID=your_test_key_id
 RAZORPAY_KEY_SECRET=your_test_key_secret
 ```
 
-The rest of the store works without payment keys. The key secret stays on the backend. The app rejects Live Mode keys. See [Razorpay’s integration instructions](https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/integration-steps/) for test checkout.
+The rest of the store works without payment keys. The key secret stays on the backend. The app rejects Live Mode keys. See [Razorpay's integration instructions](https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/integration-steps/) for test checkout.
 
-**Never commit `.env`, database files or credentials.** Only `.env.example` with empty values/placeholders belongs in the repository. Each person downloading the project supplies their own credentials.
-
-For a persistent signing secret, generate one and set `JWT_SECRET` locally:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
-```
-
-The automatic demo otherwise generates a fresh signing secret each run, requiring another sign-in after restart.
-
-## Use your own MongoDB
-
-Set `MONGODB_URI` and `JWT_SECRET` in `.env`. MongoDB must be a **replica set** (Atlas works) because order confirmation uses transactions.
-
-```bash
-npm run seed
-npm run build
-npm start
-```
-
-For development with your configured database, run `npm run dev` and open http://localhost:5173. To develop against the automatic local database, run `npm run demo` in one terminal and `npm run dev -w frontend` in another. Vite proxies `/api` to the backend on port 4000.
+**Never commit `.env`, database files or credentials.** Only `.env.example` with placeholders belongs in the repository. Each person downloading the project supplies their own Atlas and payment credentials.
 
 ## Project structure
 
@@ -62,8 +69,8 @@ backend/
   routes/           REST endpoints
   utils/            Tokens and common errors
   app.js            Express application and static frontend
-  index.js          Server using your configured MongoDB
-  demo.js           Automatic local MongoDB and server
+  index.js          Server using your MongoDB Atlas cluster
+  check-db.js       Atlas connectivity check
   seed.js           Catalogue seeding
 frontend/src/
   components/       Brand mark, navigation, product cards and states

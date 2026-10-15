@@ -13,7 +13,7 @@
     "start": "npm start -w backend",
     "seed": "npm run seed -w backend",
     "test": "node --test tests/*.test.js",
-    "demo": "node backend/demo.js"
+    "db:check": "node backend/check-db.js"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
