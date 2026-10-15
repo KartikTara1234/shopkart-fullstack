@@ -43,6 +43,8 @@ For development, run `npm run dev` and open http://localhost:5173. Vite proxies 
 
 If the connection check fails, verify the cluster is running, the database user's credentials, the encoded password and the current IP access-list entry. See [MongoDB's official connection guide](https://www.mongodb.com/docs/atlas/driver-connection/). The app requires an Atlas replica set because order confirmation uses transactions.
 
+Both Atlas SRV (`mongodb+srv://`) and standard replica-set (`mongodb://`) connection strings are supported. If your network cannot resolve SRV records, use the standard Atlas connection string with all cluster hosts, its replica-set name, `authSource=admin` and `tls=true`. Keep these values in your private `.env`.
+
 Images load from Unsplash. Fonts and the Tara brand mark are included in the source.
 
 ## Payments and secrets

@@ -10,6 +10,24 @@ test("Atlas configuration accepts a complete SRV URI", () => {
   );
 });
 
+test("Atlas configuration accepts standard TLS replica-set URIs", () => {
+  assert.doesNotThrow(() =>
+    validateAtlasUri(
+      "mongodb://tara:p%40ss@cluster-shard-00.mongodb.net:27017,cluster-shard-01.mongodb.net:27017/tara?tls=true&authSource=admin&replicaSet=atlas-example",
+    ),
+  );
+  assert.throws(() =>
+    validateAtlasUri(
+      "mongodb://tara:password@cluster.mongodb.net/tara?tls=false",
+    ),
+  );
+  assert.throws(() =>
+    validateAtlasUri(
+      "mongodb://tara:password@cluster.mongodb.net,localhost/tara?tls=true",
+    ),
+  );
+});
+
 test("Atlas configuration rejects local databases, placeholders and incomplete URIs", () => {
   for (const uri of [
     "",
