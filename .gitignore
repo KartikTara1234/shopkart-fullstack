@@ -7,3 +7,7 @@ frontend/dist/
 .DS_Store
 coverage/
 .demo-data/
+# Personal guides and packaged deliverables stay outside the source repository.
+docs/
+*.zip
+*.bundle

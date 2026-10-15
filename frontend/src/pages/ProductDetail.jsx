@@ -54,7 +54,7 @@ export default function ProductDetail() {
           {p.label && <span className="product-label">{p.label}</span>}
         </div>
         <div className="detail-copy">
-          <span className="eyebrow">{p.category} / THE SHOPKART EDIT</span>
+          <span className="eyebrow">{p.category} / THE TARA EDIT</span>
           <h1>
             {p.name}
             <span>.</span>

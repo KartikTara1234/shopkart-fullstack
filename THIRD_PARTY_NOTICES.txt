@@ -1,0 +1,5 @@
+Product photographs are served from Unsplash. See URLs in backend/seed-data.js.
+They illustrate fictional demo products; brands shown are not affiliated with ShopKart.
+Icons: Lucide (ISC license), installed through npm.
+Fonts: DM Sans and Manrope (SIL Open Font License), from Google Fonts.
+Font files are self-hosted in frontend/public/fonts/; license texts are included there.

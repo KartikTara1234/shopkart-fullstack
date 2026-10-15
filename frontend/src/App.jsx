@@ -1,3 +1,4 @@
+import BrandMark from "./components/BrandMark";
 import { useEffect } from "react";
 import {
   BrowserRouter,
@@ -105,9 +106,12 @@ function Layout() {
         <div className="footer-main">
           <div>
             <Link className="logo" to="/">
-              shopkart<span>✳</span>
+              <BrandMark />
+              <span className="brand-word">
+                Tara<span className="brand-dot">.</span>
+              </span>
             </Link>
-            <p>Good things. Every day.</p>
+            <p>A point of view. Yours.</p>
           </div>
           <div>
             <span className="eyebrow">MAKE YOURSELF AT HOME</span>
@@ -122,13 +126,13 @@ function Layout() {
             </Link>
           </div>
           <div className="footer-message">
-            A little upgrade.
+            A little more you.
             <br />
-            <em>A better everyday.</em>
+            <em>That’s the Tara way.</em>
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2026 ShopKart. A full-stack student project.</span>
+          <span>© 2026 Tara. Designed by Kartik Tara.</span>
           <span>DEMO STORE · RAZORPAY TEST MODE ONLY</span>
           <a href="#content">Back to top ↑</a>
         </div>

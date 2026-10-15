@@ -1,3 +1,4 @@
+import BrandMark from "../components/BrandMark";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -45,23 +46,25 @@ export default function Home({ account = false }) {
         <div className="hero-copy">
           <span className="eyebrow">
             <i />
-            THE EVERYDAY, RECONSIDERED
+            THE TARA EDIT / BY KARTIK TARA
           </span>
           <h1>
-            Good things.
+            Life, in your
             <br />
-            Every <em>day.</em>
+            own <em>rhythm.</em>
           </h1>
           <p>
-            Little upgrades. Big difference.
+            Things that fit your days. And your taste.
             <br />
-            Discover considered essentials for the way you live.
+            Audio, objects and everyday upgrades, with a point of view.
           </p>
           <Link className="button" to="/products">
-            Find your next favourite <ArrowUpRight size={19} />
+            Find your rhythm <ArrowUpRight size={19} />
           </Link>
           <div className="hero-foot">
-            <span className="mini-stars">✳ ✳ ✳</span>
+            <span className="collection-seal">
+              KT<span>01</span>
+            </span>
             <span>
               Less noise.
               <br />
@@ -89,7 +92,14 @@ export default function Home({ account = false }) {
               <ArrowUpRight size={24} />
             </Link>
           </div>
-          <span className="visual-star">✳</span>
+          <div className="hero-signature">
+            <BrandMark />
+            <span>
+              THE TARA
+              <br />
+              SELECTION
+            </span>
+          </div>
         </div>
       </section>
       <div className="values container">
@@ -115,7 +125,7 @@ export default function Home({ account = false }) {
           <div>
             <span className="eyebrow">THE GOOD STUFF</span>
             <h2>
-              Your everyday. <span>Upgraded.</span>
+              The everyday. <span>With an edge.</span>
             </h2>
           </div>
           <Link className="text-link" to="/products">
@@ -157,8 +167,8 @@ export default function Home({ account = false }) {
             <em>Every single day.</em>
           </h2>
           <p>
-            We believe the best things are the ones that fit right into your
-            life. Useful, beautiful, and worth keeping.
+            The idea behind Tara is simple: find the things you’ll actually use,
+            choose them well, and make a little space for your own style.
           </p>
           <Link className="text-link" to="/products?category=Lifestyle">
             Meet your daily essentials <ArrowUpRight size={18} />
@@ -172,9 +182,13 @@ export default function Home({ account = false }) {
             <br />
             <em>YOURS.</em>
           </span>
-          <div className="art-circle">✳</div>
+          <div className="glass-sculpture" aria-hidden="true">
+            <div />
+            <div />
+            <BrandMark />
+          </div>
           <span className="art-caption">
-            THE SHOPKART PHILOSOPHY / EST. 2026
+            KARTIK TARA / A PERSONAL PERSPECTIVE
           </span>
         </div>
       </section>

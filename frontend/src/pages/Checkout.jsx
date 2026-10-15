@@ -61,14 +61,14 @@ export default function Checkout() {
         amount: d.amount,
         currency: d.currency,
         order_id: d.razorpayOrderId,
-        name: "ShopKart",
+        name: "Tara",
         description: "Your everyday, upgraded · Test Mode",
         prefill: {
           name: form.fullName,
           email: user.email,
           contact: form.phone,
         },
-        theme: { color: "#e78353" },
+        theme: { color: "#a8e7ce" },
         modal: {
           ondismiss: () => {
             setBusy(false);

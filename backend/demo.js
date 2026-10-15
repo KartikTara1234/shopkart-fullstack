@@ -46,14 +46,12 @@ try {
     await adminClient.db("admin").command({ replSetGetConfig: 1 });
   } catch (error) {
     if (error.code !== 94) throw error;
-    await adminClient
-      .db("admin")
-      .command({
-        replSetInitiate: {
-          _id: "testset",
-          members: [{ _id: 0, host: "127.0.0.1:27029" }],
-        },
-      });
+    await adminClient.db("admin").command({
+      replSetInitiate: {
+        _id: "testset",
+        members: [{ _id: 0, host: "127.0.0.1:27029" }],
+      },
+    });
   }
 } finally {
   await adminClient.close();
@@ -74,7 +72,7 @@ for (const p of products)
   );
 const server = createApp().listen(4000, "127.0.0.1", () =>
   console.log(
-    "ShopKart local demo: http://localhost:4000 • MongoDB persists in .demo-data/",
+    "Tara local demo: http://localhost:4000 • MongoDB persists in .demo-data/",
   ),
 );
 async function close() {

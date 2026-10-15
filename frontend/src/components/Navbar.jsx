@@ -1,3 +1,4 @@
+import BrandMark from "./BrandMark";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   ShoppingBag,
@@ -21,7 +22,10 @@ export default function Navbar() {
       </div>
       <header className="header">
         <Link className="logo" to="/">
-          shopkart<span>✳</span>
+          <BrandMark />
+          <span className="brand-word">
+            Tara<span className="brand-dot">.</span>
+          </span>
         </Link>
         <nav aria-label="Main navigation">
           <NavLink to="/products">Shop all</NavLink>

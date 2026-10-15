@@ -1,14 +1,12 @@
-# ShopKart — Good things. Every day.
+# Tara.
 
-A complete MERN shopping project implementing the six [ShopKart engineering labs](https://github.com/mrinal1224/Lab-2029-Problem-Statements). An original dark storefront with warm orange accents, editorial typography, a frosted product feature, responsive layouts, and gentle motion with reduced-motion support.
+An everyday essentials store by Kartik Tara. Built with React, Express, MongoDB and Razorpay Test Mode for the ShopKart full-stack labs.
 
-**React · Express · MongoDB · Mongoose · JWT cookies · Razorpay Test Mode**
+The interface uses a custom folded-T monogram, translucent glass panels, layered shadows and a responsive dark theme. Customers can register, browse and filter products, save a wishlist, manage their bag and check out through Razorpay.
 
-![ShopKart storefront](docs/storefront.png)
+## Run locally
 
-## Quick start — no database account needed
-
-Install Node.js 22 or newer. Open a terminal inside this folder, then run:
+Requires **Node.js 22+** and internet access for the first database download.
 
 ```bash
 npm ci
@@ -16,145 +14,107 @@ npm run build
 npm run demo
 ```
 
-Open **http://localhost:4000**. Register your own account, then sign in. On macOS you can also double-click `Start ShopKart.command` to build and start the demo.
+Open **http://localhost:4000** and create an account. The demo starts a real MongoDB replica set automatically and seeds the catalogue. Data persists locally in `.demo-data/`. Stop it with `Ctrl+C`; wait for shutdown before restarting.
 
-The demo command starts a **real MongoDB replica set** locally, seeds eight products, and serves the built React app and API together. It downloads the MongoDB binary on first use, so internet access is required initially. Accounts, wishlists, bags and orders are stored under the ignored `.demo-data/` folder and retained between runs. Stop with `Ctrl+C`. The automatically generated demo JWT signing secret changes on restart, so sign in again after restarting.
+No database account is required for this local setup. Images load from Unsplash. Fonts and the Tara brand mark are included in the source.
 
-Payment is intentionally unavailable until you configure your own **Razorpay Test Mode keys**. There is no fake payment-success shortcut. All other shopping features work without payment credentials.
+## Environment and payments
 
-## Labs covered
+Copy `.env.example` to `.env` in the project root. Add your own Razorpay **Test Mode** key ID and secret to enable checkout:
 
-| Lab | Implementation |
-| --- | --- |
-| 01 — Authentication backend | Registration, bcrypt hashes, login, signed JWT in HttpOnly cookie, protected profile, logout, MVC structure |
-| 02 — React authentication | Controlled registration/login forms, validation, protected `/home`, profile details, logout navigation |
-| 03 — Catalogue | Mongoose product model, create/list/detail APIs, case-insensitive literal search, category filters, loading/error/empty states |
-| 04 — Wishlist | MongoDB references, idempotent add, removal, per-customer ownership, page-local React state |
-| 05 — Cart | Persistent product references and quantities, increment/update/remove, stock checks, Context cart state, live quantity badge and derived subtotal |
-| 06 — Checkout and orders | Shipping validation, server totals, purchase-time snapshots, pending orders, Razorpay Orders API, Standard Checkout, backend HMAC verification, transactional stock/cart updates, private order history/details |
+```env
+RAZORPAY_KEY_ID=your_test_key_id
+RAZORPAY_KEY_SECRET=your_test_key_secret
+```
 
-## Connect your own MongoDB and Razorpay
+The rest of the store works without payment keys. The key secret stays on the backend. The app rejects Live Mode keys. See [Razorpay’s integration instructions](https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/integration-steps/) for test checkout.
 
-1. Copy `.env.example` to **`.env` in the project root**. This file is ignored by Git.
-2. For your own database, create a MongoDB Atlas cluster or a local replica set. Put its connection string into `MONGODB_URI`. Atlas requires a database user and a network access entry for your machine. Use a replica set because payment confirmation uses transactions.
-3. Generate a signing secret and paste the output into `JWT_SECRET`:
+**Never commit `.env`, database files or credentials.** Only `.env.example` with empty values/placeholders belongs in the repository. Each person downloading the project supplies their own credentials.
 
-   ```bash
-   node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
-   ```
+For a persistent signing secret, generate one and set `JWT_SECRET` locally:
 
-4. In the Razorpay Dashboard, switch to **Test Mode**, generate API keys, and set `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` in `.env`. The application only accepts `rzp_test_` key IDs. Never put the secret into React or commit it.
-5. For your own MongoDB, run:
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
 
-   ```bash
-   npm run seed
-   npm run build
-   npm start
-   ```
+The automatic demo otherwise generates a fresh signing secret each run, requiring another sign-in after restart.
 
-   For the automatic local database, keep using `npm run demo`; it still reads Razorpay keys from `.env`.
+## Use your own MongoDB
 
-Follow the [official Razorpay integration guide](https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/integration-steps/) for account setup and test payment methods. Enable automatic capture in the Test Mode dashboard. No real payment details are needed for test checkout.
+Set `MONGODB_URI` and `JWT_SECRET` in `.env`. MongoDB must be a **replica set** (Atlas works) because order confirmation uses transactions.
 
-## Development
+```bash
+npm run seed
+npm run build
+npm start
+```
 
-With your own MongoDB configured, run `npm run dev` and open **http://localhost:5173**. Vite proxies `/api` to port 4000. If using the automatic demo database instead, run `npm run demo` in one terminal and `npm run dev -w frontend` in another. Avoid running two backend servers on port 4000.
+For development with your configured database, run `npm run dev` and open http://localhost:5173. To develop against the automatic local database, run `npm run demo` in one terminal and `npm run dev -w frontend` in another. Vite proxies `/api` to the backend on port 4000.
 
-The built app uses one origin for frontend and backend. No CORS configuration or browser token storage is needed. Fetch sends cookies using `credentials: 'include'`.
-
-## Commands
-
-| Command | Purpose |
-| --- | --- |
-| `npm ci` | Install locked dependency versions |
-| `npm run build` | Build the React frontend |
-| `npm run demo` | Start local persistent MongoDB, seed catalogue and serve built app |
-| `npm run dev` | Start backend watcher and Vite with your configured database |
-| `npm start` | Serve built frontend and API using configured MongoDB |
-| `npm run seed` | Insert missing seed products without replacing existing records |
-| `npm test` | Run API integration tests against an isolated MongoDB replica set |
-
-## Structure
+## Project structure
 
 ```text
 backend/
-  config/           Environment loading and Razorpay configuration
-  controllers/      Authentication, products, wishlist, cart and order logic
-  middlewares/      Cookie/JWT authentication
-  models/           Customer, Product and Order Mongoose schemas
-  routes/           HTTP route definitions
-  utils/            Token generation and common errors
-  app.js            Express app, security headers and static frontend
-  index.js          Configured database server
-  demo.js           Automatic local MongoDB server
-  seed.js           Idempotent catalogue seed
+  config/           Environment and payment configuration
+  controllers/      Customer, product, shopping and order logic
+  middlewares/      JWT cookie authentication
+  models/           Mongoose schemas
+  routes/           REST endpoints
+  utils/            Tokens and common errors
+  app.js            Express application and static frontend
+  index.js          Server using your configured MongoDB
+  demo.js           Automatic local MongoDB and server
+  seed.js           Catalogue seeding
 frontend/src/
-  components/       Navbar, product cards, shared loading/error/empty states
-  context/          Auth and cart Context (wishlist remains page-local)
-  pages/            Landing, catalogue, auth, details, wishlist, cart, checkout, orders
-  services/         Central Fetch client and currency formatting
-  styles.css        Responsive design and motion
+  components/       Brand mark, navigation, product cards and states
+  context/          Shared customer and cart state
+  hooks/            Page-local wishlist loading
+  pages/            Store, account, wishlist, bag, checkout and orders
+  services/         Fetch client and currency formatting
+  styles.css        Responsive layout, glass surfaces and depth
   App.jsx           Routes and protected pages
-tests/              Integration tests
-.github/workflows/  Build and test workflow for GitHub
+tests/              API integration tests
 ```
 
 ## API
 
-Use **http://localhost:4000/api** as the base URL. The same routes are also available without `/api` for JSON clients such as Postman. HTML requests to `/products`, `/cart`, `/wishlist` and `/orders` serve the React pages. Set `Accept: application/json` when using those unprefixed APIs.
+Base URL: `http://localhost:4000/api`. JSON clients can also use the unprefixed lab routes; send `Accept: application/json` to distinguish them from frontend pages.
 
-| Method | Path | Auth | Body / purpose |
-| --- | --- | --- | --- |
-| POST | `/customers/register` | No | `fullName`, `email`, `password`, `phone` |
-| POST | `/customers/login` | No | `email`, `password`; sets cookie |
-| GET | `/customers/me` | Yes | Current profile, never password |
-| POST | `/customers/logout` | Yes | Clears cookie |
-| GET | `/products` | No | Optional `search` and `category` query strings |
-| POST | `/products` | No* | `name`, `description`, `price`, `category`, `image`, `stock` |
-| GET | `/products/:id` | No | Single product |
-| GET | `/wishlist` | Yes | Current customer's saved products |
-| POST | `/wishlist/:productId` | Yes | Add once |
-| DELETE | `/wishlist/:productId` | Yes | Remove |
-| GET | `/cart` | Yes | Populated cart and subtotal |
-| POST | `/cart/:productId` | Yes | Add one / increment existing |
-| PATCH | `/cart/:productId` | Yes | `{ "quantity": 2 }` |
-| DELETE | `/cart/:productId` | Yes | Remove |
-| POST | `/orders/create-payment-order` | Yes | `{ "shippingAddress": { ... } }` |
-| POST | `/orders/verify-payment` | Yes | ShopKart order ID plus Razorpay callback fields |
-| GET | `/orders` | Yes | Current customer's order history |
-| GET | `/orders/:id` | Yes | Own order only |
-| GET | `/health` | No | Database health |
+| Method | Endpoint | Authentication |
+| --- | --- | --- |
+| POST | `/customers/register` | Public |
+| POST | `/customers/login` | Public |
+| GET | `/customers/me` | Required |
+| POST | `/customers/logout` | Required |
+| GET, POST | `/products` | Public |
+| GET | `/products/:id` | Public |
+| GET | `/wishlist` | Required |
+| POST, DELETE | `/wishlist/:productId` | Required |
+| GET | `/cart` | Required |
+| POST, PATCH, DELETE | `/cart/:productId` | Required |
+| POST | `/orders/create-payment-order` | Required |
+| POST | `/orders/verify-payment` | Required |
+| GET | `/orders` | Required |
+| GET | `/orders/:id` | Required |
+| GET | `/health` | Public |
 
-*Open product creation is permitted by Lab 03. Restrict it with admin authorization before exposing a store publicly.*
+Registration accepts `fullName`, `email`, `password` and `phone`. Product listing supports `search` and `category`. Updating a cart item accepts `{ "quantity": 2 }`.
 
-Shipping address fields: `fullName`, `phone`, `addressLine1`, `city`, `state`, `pincode`. Every field is required. Pincode must be six digits.
+Checkout accepts `shippingAddress` containing `fullName`, `phone`, `addressLine1`, `city`, `state` and a six-digit `pincode`. The backend calculates the total using current product prices and creates a Razorpay order in paise. Verification accepts `shopKartOrderId` and the three Razorpay callback fields. The internal ShopKart field name follows the lab contract.
 
-Payment verification fields: `shopKartOrderId`, `razorpay_order_id`, `razorpay_payment_id`, `razorpay_signature`.
+Passwords are bcrypt hashes. Sessions use JWTs in HttpOnly cookies. Wishlist, cart and order access are scoped to the authenticated customer. Orders keep purchase-time snapshots; a transaction confirms payment, updates stock and removes purchased quantities. Duplicate verification callbacks are idempotent.
 
-Import [the Postman collection](docs/ShopKart.postman_collection.json) to exercise the APIs with its cookie jar.
+## Checks
 
-## Payment and data integrity
+```bash
+npm run build
+npm test
+```
 
-The backend reloads the authenticated customer's cart and products, checks stock, computes the amount and persists an order snapshot. It creates a Razorpay order in paise and returns only the public key ID. Opening checkout leaves the bag untouched. A successful browser callback is sent back to the backend, which verifies an HMAC using the database's trusted Razorpay order ID and the backend secret. An atomic MongoDB transaction marks the order paid/placed, decrements stock and removes purchased quantities from the cart. Repeated callbacks do not double-decrement stock. New quantities added after checkout opened are preserved.
+Tests use an isolated MongoDB replica set and cover authentication, validation, catalogue filters, wishlist/cart persistence, stock limits, order ownership and payment-signature verification. They use local signature fixtures; complete an actual Razorpay Test Mode checkout separately with your own account keys.
 
-## Verification
+## Scope
 
-`npm test` covers registration, duplicate emails, password hashing, HttpOnly cookies, anonymous access, login/logout, product validation and filters, wishlist persistence/idempotency, cart stock and quantity validation, missing payment configuration, forged payment rejection, cross-customer isolation, valid HMAC confirmation, callback idempotency and immutable order price snapshots. The payment verification test uses a locally generated signature fixture and does **not** claim to make a Razorpay payment.
+This is a Test Mode lab store with no real fulfilment or live payments. Product creation is open as specified in Lab 03; add admin authorization before public hosting. Production use also needs payment webhooks, reconciliation/refunds, stock reservations and monitoring. For a Node host, set `HOST=0.0.0.0`, `NODE_ENV=production`, your private environment variables and the host-provided `PORT`; serve the frontend and API from one HTTPS origin.
 
-**A real Razorpay Test Mode checkout must still be run with your account keys before final submission.** The source integration is included; external provider checkout cannot be verified without credentials.
-
-## Demonstration scope and limitations
-
-This is a student lab application. It has no real fulfilment, refunds, admin dashboard, email delivery or production payment webhooks. A callback lost after payment needs manual reconciliation. Stock is checked at checkout and confirmation; a stock conflict after payment reports a reconciliation error rather than falsely confirming. Live payment keys are rejected. Public browsing is allowed; account, wishlist, cart, checkout and orders require login. Free delivery is a demo store rule.
-
-In production, add admin authorization, payment webhooks/reconciliation, reservations/refunds, email verification and operational monitoring. Use HTTPS (`NODE_ENV=production` enables Secure cookies), and configure your Node host's bind address as described below.
-
-## Optional hosting
-
-Deploy the **whole Node application** to a Node-compatible host and use MongoDB Atlas. Run `npm ci && npm run build` as the build command, `npm start` as the start command, and configure the environment variables privately on the host. Set `HOST=0.0.0.0`, `NODE_ENV=production` and the provided `PORT`. Frontend and API should share one HTTPS origin. Do not deploy only `frontend/dist` and expect backend features to work. A public deployment was not created as part of this local project.
-
-## Submission
-
-See [docs/SUBMISSION.md](docs/SUBMISSION.md) for GitHub upload, final checks and form submission steps, and [docs/VIVA.md](docs/VIVA.md) for a concise walkthrough of the implementation.
-
-Product imagery is loaded from Unsplash and requires an internet connection. Fonts are self-hosted; their licenses are included in `frontend/public/fonts/`. See [third-party notices](docs/THIRD-PARTY-NOTICES.txt).
+Third-party photographs, icons and fonts retain their respective licenses; see `THIRD_PARTY_NOTICES.txt`. The Tara brand mark is a custom SVG included in `frontend/public/tara-mark.svg`.

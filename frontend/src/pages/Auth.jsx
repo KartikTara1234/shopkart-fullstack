@@ -1,3 +1,4 @@
+import BrandMark from "../components/BrandMark";
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowUpRight, Eye, EyeOff } from "lucide-react";
@@ -45,13 +46,15 @@ export default function Auth({ register = false }) {
           <br />
           <em>you.</em>
         </h1>
-        <div className="auth-star">✳</div>
+        <div className="auth-monogram">
+          <BrandMark />
+        </div>
         <p>
           A place for good things.
           <br />
           And the people who appreciate them.
         </p>
-        <span className="auth-number">SHOPKART / 2026</span>
+        <span className="auth-number">TARA / KARTIK TARA / 2026</span>
       </div>
       <section className="auth-form">
         <span className="eyebrow">

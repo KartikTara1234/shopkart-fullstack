@@ -9,9 +9,7 @@ export async function api(path, options = {}) {
         options.body === undefined ? undefined : JSON.stringify(options.body),
     });
   } catch {
-    throw new Error(
-      "Cannot reach ShopKart. Check that the backend is running.",
-    );
+    throw new Error("Cannot reach Tara. Check that the backend is running.");
   }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
