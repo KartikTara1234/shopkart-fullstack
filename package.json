@@ -1,0 +1,26 @@
+{
+  "name": "shopkart",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n API,WEB \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w frontend",
+    "start": "npm start -w backend",
+    "seed": "npm run seed -w backend",
+    "test": "node --test tests/*.test.js",
+    "demo": "node backend/demo.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "mongodb-memory-server": "^10.2.3",
+    "supertest": "^7.1.4"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
